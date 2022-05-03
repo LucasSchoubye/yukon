@@ -1,6 +1,10 @@
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include<time.h>
+
 /**
  * Yukon: Play the traditional card-game in C.
  */
@@ -9,14 +13,14 @@ struct Card {
     char suit; // 1. Spar, 2. Ruder, 3. Klør, 4. Hjerter
     char value; // 1. Es, 11. Knægt, 12. Dame, 13. Konge
     int shown;
-    struct Card* next;
-    struct Card* prev;
+    struct Card *next;
+    struct Card *prev;
 };
 
 // Create Test Columns
-struct Card* columnArray[7];
-struct Card* foundationArray[4];
-struct Card* column_test = NULL;
+struct Card *columnArray[7];
+struct Card *foundationArray[4];
+struct Card *column_test = NULL;
 
 // Create Test Cards
 int card_num = 0;
@@ -25,33 +29,42 @@ int cardsInColumn = 1;
 int scanLoopIndex = 0;
 int gameStarted = 0;
 char fileName[255];
-struct Card* deck[52];
-struct Card* card_new = NULL;
-struct Card* card_old = NULL;
+struct Card *deck[52];
+struct Card *card_new = NULL;
+struct Card *card_old = NULL;
 
 // Methods
 void printPrevList(struct Card *pCard);
+
 void printGameState();
-const char* checkFileInput(char* inputLine, int inputPointer);
+
+const char *checkFileInput(char *inputLine, int inputPointer);
+
 void printAnyCard(struct Card *pCard);
+
 void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, char toChar, char toNumber);
-struct Card* searchSpecificCard(struct Card* n, char cardSuit, char cardValue);
-struct Card* searchLastCard(struct Card* n);//, char cardSuit, char cardValue);
+
+struct Card *searchSpecificCard(struct Card *n, char cardSuit, char cardValue);
+
+struct Card *searchLastCard(struct Card *n);//, char cardSuit, char cardValue);
 void mixCards();
+
 void doCommand(char firstChar, char secChar);
+
 int hasWon();
+
 FILE *fopen(const char *filename, const char *mode);
+
 int fscanf(FILE *stream, const char *format, ...);
+
 int fputs(const char *str, FILE *stream);
 
 // Play the game
-int main()
-{
+int main() {
     // Create Columns
-    for (int i = 0; i < 7; ++i)
-    {
+    for (int i = 0; i < 7; ++i) {
         // Create a Column Start
-        column_test = (struct Card*)malloc(sizeof(struct Card));
+        column_test = (struct Card *) malloc(sizeof(struct Card));
         column_test->value = 0; // Top
         column_test->suit = '0'; // Top
         column_test->next = NULL; // Top
@@ -61,10 +74,9 @@ int main()
     }
 
     // Create foundations
-    for (int i = 0; i < 4; ++i)
-    {
+    for (int i = 0; i < 4; ++i) {
         // Create a Column Start
-        column_test = (struct Card*)malloc(sizeof(struct Card));
+        column_test = (struct Card *) malloc(sizeof(struct Card));
         column_test->value = 0; // Top
         column_test->suit = '0'; // Top
         column_test->next = NULL; // Top
@@ -74,11 +86,9 @@ int main()
     }
 
     // Create Deck of Cards
-    for (int i = 1; i < 5; ++i)
-    {
+    for (int i = 1; i < 5; ++i) {
         char suit_type;
-        switch (i)
-        {
+        switch (i) {
             case 1:
                 suit_type = 'S';
                 break;
@@ -93,10 +103,9 @@ int main()
                 break;
         }
 
-        for (int i = 1; i < 14; ++i)
-        {
+        for (int i = 1; i < 14; ++i) {
             //struct Card* card_1 = NULL;
-            card_new = (struct Card*)malloc(sizeof(struct Card));
+            card_new = (struct Card *) malloc(sizeof(struct Card));
             card_new->value = i; // assign data in first node
             card_new->suit = suit_type; // assign data in first node
             deck[card_num] = card_new;
@@ -107,7 +116,7 @@ int main()
     // Shuffle deck randomly
     srand(time(0));
     for (int i = 0; i < 1000; ++i) {
-        mixCards(deck);
+        //mixCards(deck);
     }
 
     /*
@@ -157,8 +166,7 @@ int main()
     char *input[9];
     char inputLine[255];
     int inputPointer = 1;
-    while (hasWon() || gameStarted == 0)
-    {
+    while (hasWon() || gameStarted == 0) {
         // Reset Input array
         for (int i = 0; i < 9; ++i) {
             input[i] = NULL;
@@ -181,26 +189,22 @@ int main()
             inputPointer++;
         }
         int i = 0;
-        while(fileName[i] != NULL) {
+        while (fileName[i] != NULL) {
             i++;
         }
         i--;
-        printf("%d\n", i);
-        printf("%s", fileName);
         //printf("%s", "fuck mit net b");
-        if(spaceTrue != 1) {
+        if (spaceTrue != 1) {
             doCommand(inputLine[inputPointer - 3], inputLine[inputPointer - 2]);
         } else {
             doCommand(inputLine[inputPointer - 2], inputLine[inputPointer - 1]);
         }
 
         // If game is started
-        if (gameStarted  == 1)
-        {
+        if (gameStarted == 1) {
             // Do the command
             //gameCommand(input[0+1], input[1+1], input[3+1], input[4+1], input[6+1], input[7+1]);
-            if (inputPointer > 8)
-            {
+            if (inputPointer > 8) {
                 gameCommand(inputLine[inputPointer - 9], inputLine[inputPointer - 8], inputLine[inputPointer - 6],
                             inputLine[inputPointer - 5], inputLine[inputPointer - 3], inputLine[inputPointer - 2]);
             }
@@ -227,14 +231,15 @@ int main()
     }
     printf("%s\n", "YOU WON THE GAME");
 }
-const char* checkFileInput(char* inputLine, int inputPointer) {
+
+const char *checkFileInput(char *inputLine, int inputPointer) {
     int i = 0;
     if (inputLine[inputPointer] == ' ' && inputLine[inputPointer - 2] == 'L' && inputLine[inputPointer - 1] == 'D') {
         inputPointer++;
-        while(fileName[i] != '\n') {
+        while (fileName[i] != '\n') {
             scanf("%c", &inputLine[inputPointer]);
             fileName[i] = inputLine[inputPointer];
-            if(fileName[i] == '\n') {
+            if (fileName[i] == '\n') {
                 break;
             }
             inputPointer++;
@@ -243,7 +248,8 @@ const char* checkFileInput(char* inputLine, int inputPointer) {
     }
     return *fileName;
 }
-void mixCards(struct Card* deck[]){
+
+void mixCards(struct Card *deck[]) {
     struct Card *mixCard;
 
     int random_index1 = rand() % (52 + 1 - 0) + 0;
@@ -255,12 +261,12 @@ void mixCards(struct Card* deck[]){
     deck[random_index2] = mixCard;
 }
 
-void mixCardsInterleaved(struct Card* deck[]) {
+void mixCardsInterleaved(struct Card *deck[]) {
 
     int topDeck = rand() % (52 + 1 - 0) + 0;
 
-    int* shuffle1 [topDeck];
-    int* shuffle2 [52-topDeck];
+    int *shuffle1[topDeck];
+    int *shuffle2[52 - topDeck];
 
     // if topdeck > 52/2
     // switch shuffle1 og shuffle 2
@@ -268,41 +274,39 @@ void mixCardsInterleaved(struct Card* deck[]) {
     for (int i = 0; i < topDeck; i++) {
         shuffle1[i] = deck[i];
     }
-    for (int i = 0; i < 52-topDeck; i++) {
+    for (int i = 0; i < 52 - topDeck; i++) {
         shuffle2[i] = deck[topDeck + i];
     }
     for (int i = 0; i < topDeck; i++) {
 
         // Insert the first deck
         if (shuffle1[i] != NULL) {
-            if (topDeck >= 52/2) {
-                deck[i*2] = shuffle1[i];
+            if (topDeck >= 52 / 2) {
+                deck[i * 2] = shuffle1[i];
             } else {
-                deck[i*2-1] = shuffle1[i];
+                deck[i * 2 - 1] = shuffle1[i];
             }
         }
         // Insert the second deck
-        if (shuffle2[i-topDeck] != NULL) {
-            if (topDeck >= 52/2) {
-                deck[i*2-1] = shuffle2[i];
+        if (shuffle2[i - topDeck] != NULL) {
+            if (topDeck >= 52 / 2) {
+                deck[i * 2 - 1] = shuffle2[i];
             } else {
-                deck[i*2] = shuffle2[i];
+                deck[i * 2] = shuffle2[i];
             }
         }
     }
     if (topDeck >= 52) {
         for (int i = 0; i < 2; ++i) {
-        //too kogt laver færdig i morgen:)
+            //too kogt laver færdig i morgen:)
         }
     }
 }
 
 void printPrevList(struct Card *pCard) {
-    while (pCard != NULL)
-    {
-        if (pCard->value < 10)
-        {printf(" %d", pCard->value);}else
-        {
+    while (pCard != NULL) {
+        if (pCard->value < 10) { printf(" %d", pCard->value); }
+        else {
             switch (pCard->value) {
                 case 10:
                     printf(" %c", 'T');
@@ -323,11 +327,9 @@ void printPrevList(struct Card *pCard) {
     }
 }
 
-void printAnyCard(struct Card *pCard)
-{
-    if (pCard->value < 10)
-    {printf(" %d", pCard->value);}else
-    {
+void printAnyCard(struct Card *pCard) {
+    if (pCard->value < 10) { printf(" %d", pCard->value); }
+    else {
         switch (pCard->value) {
             case 10:
                 printf(" %c", 'T');
@@ -347,13 +349,11 @@ void printAnyCard(struct Card *pCard)
 }
 
 void printHorList(struct Card *pCard, int rowNumber) {
-    int curRow=0;
+    int curRow = 0;
     int cardPrinted = 0;
-    while (pCard != NULL)
-    {
+    while (pCard != NULL) {
         // If the correct card
-        if (curRow == rowNumber)
-        {
+        if (curRow == rowNumber) {
             // Print the card
             if (pCard->value < 10) {
                 printf(" %d", pCard->value);
@@ -379,8 +379,7 @@ void printHorList(struct Card *pCard, int rowNumber) {
         curRow++;
         pCard = pCard->prev;
     }
-    if (cardPrinted == 0)
-    {
+    if (cardPrinted == 0) {
         printf("%s\t", "  ");
     }
 }
@@ -390,25 +389,23 @@ void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, 
     // Variables
     int toColumnNumber = 0;
     int fromColumnNumber = 0;
-    struct Card* targetCard; // The card you will place a card on
+    struct Card *targetCard; // The card you will place a card on
 
     // Read what column number you are taking from
-    fromColumnNumber = (int)(fromNumber-'0');
+    fromColumnNumber = (int) (fromNumber - '0');
 
     // Read location to move the card
-    toColumnNumber = (int)(toNumber-'0');
+    toColumnNumber = (int) (toNumber - '0');
 
     // Find the first card to take
-    struct Card* firstCard = searchSpecificCard(columnArray[fromColumnNumber], cardSuit, cardValue); // The card you wish to move
+    struct Card *firstCard = searchSpecificCard(columnArray[fromColumnNumber], cardSuit,
+                                                cardValue); // The card you wish to move
 
     // What is the first card on the to column/foundation
-    if (toChar == 'F')
-    {
+    if (toChar == 'F') {
         // If moving to a foundation
         targetCard = searchLastCard(foundationArray[toColumnNumber]);
-    }
-    else if (toChar == 'C')
-    {
+    } else if (toChar == 'C') {
         // If moving to a column
         targetCard = searchLastCard(columnArray[toColumnNumber]);
     }
@@ -416,7 +413,8 @@ void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, 
 
     // Can you move the card?
     if (toChar == 'C') {
-        if ((targetCard->suit != firstCard->suit && targetCard->value - 1 == firstCard->value) || (targetCard->value == 0 && firstCard->value == 13)) {
+        if ((targetCard->suit != firstCard->suit && targetCard->value - 1 == firstCard->value) ||
+            (targetCard->value == 0 && firstCard->value == 13)) {
             // Move the card
             firstCard->next->prev = NULL;
             firstCard->next = targetCard;
@@ -424,9 +422,10 @@ void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, 
         } else {
             printf("%s\n", "ILLEGAL MOVE");
         }
-    } else if (toChar == 'F')
-    {
-        if (targetCard->value == firstCard->value -1 && (targetCard->suit == '0' || targetCard->suit == firstCard->suit) && firstCard->prev == NULL)//(targetCard->suit == firstCard->suit || firstCard->suit == '0') && targetCard->value - 1 == firstCard->value) {
+    } else if (toChar == 'F') {
+        if (targetCard->value == firstCard->value - 1 &&
+            (targetCard->suit == '0' || targetCard->suit == firstCard->suit) && firstCard->prev ==
+                                                                                NULL)//(targetCard->suit == firstCard->suit || firstCard->suit == '0') && targetCard->value - 1 == firstCard->value) {
         {
             // Move the card
             firstCard->next->prev = NULL;
@@ -439,8 +438,7 @@ void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, 
     }
 }
 
-void printList(struct Card* n)
-{
+void printList(struct Card *n) {
     while (n != NULL) {
         printf(" %d ", n->value);
         printf("(%c)", n->suit);
@@ -448,19 +446,16 @@ void printList(struct Card* n)
     }
 }
 
-void printDeck()
-{
+void printDeck() {
     // Print Deck
-    for (int i = 0; i < 52; ++i)
-    {
-        struct Card* n = deck[i];
+    for (int i = 0; i < 52; ++i) {
+        struct Card *n = deck[i];
         printAnyCard(n);
     }
 }
 
-struct Card* searchSpecificCard(struct Card* n, char cardSuit, char cardValue)
-{
-    struct Card* foundCard = columnArray[6]->prev;
+struct Card *searchSpecificCard(struct Card *n, char cardSuit, char cardValue) {
+    struct Card *foundCard = columnArray[6]->prev;
     int calculatedCardValue = NULL;
 
     // Convert Card Value to integer
@@ -489,8 +484,7 @@ struct Card* searchSpecificCard(struct Card* n, char cardSuit, char cardValue)
             }
             n = n->prev;
         }
-    } else
-    {
+    } else {
         while (n != NULL) {
             if (n->value == calculatedCardValue && n->suit == cardSuit)// && n->value == cardValue)
             {
@@ -503,15 +497,13 @@ struct Card* searchSpecificCard(struct Card* n, char cardSuit, char cardValue)
     return foundCard;
 }
 
-struct Card* searchLastCard(struct Card* n)//, char cardSuit, char cardValue)
+struct Card *searchLastCard(struct Card *n)//, char cardSuit, char cardValue)
 {
-    struct Card* foundCard = columnArray[6]->prev;
+    struct Card *foundCard = columnArray[6]->prev;
 
     // Print Deck
-    while (n != NULL)
-    {
-        if (n->prev == NULL)
-        {
+    while (n != NULL) {
+        if (n->prev == NULL) {
             foundCard = n;
             return foundCard;
         }
@@ -520,11 +512,10 @@ struct Card* searchLastCard(struct Card* n)//, char cardSuit, char cardValue)
     return foundCard;
 }
 
-void doCommand (char firstChar, char secChar) {
+void doCommand(char firstChar, char secChar) {
 
     // Quit Game (QQ)
-    if ('Q' == firstChar && 'Q' == secChar)
-    {
+    if ('Q' == firstChar && 'Q' == secChar) {
         // Quit
         printf("%s", "QUITTING GAME");
         exit(0);
@@ -586,34 +577,79 @@ void doCommand (char firstChar, char secChar) {
     }
 
     // Load (LD)
-    FILE * fp;
-    char readFile[150];
+    FILE *fp;
+    char readFile[104];
+    char newFile[150];
     if ('L' == firstChar && 'D' == secChar) {
-        printf("%s", fileName);
-        fp = fopen("text.txt", "r");
+        // Adds '..\' to the file's name to get the path of the file
+        newFile[0] = '.';
+        newFile[1] = '.';
+        newFile[2] = '\\';
 
-        while(!feof(fp)) {
-            fgets(readFile, 150, fp);
-            puts(readFile);
+        strcat(newFile, fileName);
+
+        // Removes '\n' from array so file can be read properly
+        int i = 0;
+        while (newFile[i] != NULL) {
+            i++;
         }
-        fclose(fp);
+        if (newFile[i - 1] == '\n') {
+            newFile[i - 1] = NULL;
+        }
+
+        // Reads file specified by user
+        fp = fopen(newFile, "r");
+
+        // card_num is initialized to 0
+        card_num = 0;
+
+        // Loop until end of file (last line of file)
+        while (!feof(fp)) {
+            fgets(readFile, 104, fp);
+            if (readFile[0] != NULL && readFile[1] != NULL)
+            {
+                // Load deck from file through readFile
+                card_new = (struct Card *) malloc(sizeof(struct Card));
+                    switch (readFile[0]) {
+                        case 'T':
+                            card_new->value = 10;
+                            break;
+                        case 'J':
+                            card_new->value = 11;
+                            break;
+                        case 'Q':
+                            card_new->value = 12;
+                            break;
+                        case 'K':
+                            card_new->value = 13;
+                            break;
+                        default:
+                            card_new->value = readFile[0] - '0'; // assign data in first node
+                    }
+                card_new->suit = readFile[1]; // assign data in first node
+                deck[card_num] = card_new;
+                card_num++;
+
+                // Reset readFile values
+                readFile[0] = NULL;
+                readFile[1] = NULL;
+            }
+
+        }
     }
 }
 
-int hasWon()
-{
+int hasWon() {
     int result = 0;
-    for (int i = 0; i < 7; ++i)
-    {
-        if (columnArray[i]->prev != NULL){
+    for (int i = 0; i < 7; ++i) {
+        if (columnArray[i]->prev != NULL) {
             result = 1;
         }
     }
     return result;
 }
 
-void printGameState()
-{
+void printGameState() {
 
     // Print Game Line
     for (int i = 0; i < 7; ++i) {
@@ -622,24 +658,21 @@ void printGameState()
     }
 
     // Print first row of cards
-    printf("\n","");
-    for (int q = 0; q < 13; ++q)
-    {
-        for (int i = 0; i < 7; ++i)
-        {
+    printf("\n", "");
+    for (int q = 0; q < 13; ++q) {
+        for (int i = 0; i < 7; ++i) {
             // Print Columns
-            printHorList(columnArray[i],q+1);
+            printHorList(columnArray[i], q + 1);
         }
         // Print Foundations
-        if (q > 0 && q < 5)
-        {
-            printf("\t %c%d",'F',q-1);
-            printAnyCard(foundationArray[q-1]);
+        if (q > 0 && q < 5) {
+            printf("\t %c%d", 'F', q - 1);
+            printAnyCard(foundationArray[q - 1]);
         }
 
         // Next Line
-        printf("\n","");
+        printf("\n", "");
     }
-    printf("\n%s\n","INPUT:");
+    printf("\n%s\n", "INPUT:");
 
 };
