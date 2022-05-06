@@ -687,6 +687,9 @@ void doCommand(char firstChar, char secChar) {
                 // Reset readFile values
                 readFile[0] = NULL;
                 readFile[1] = NULL;
+            } else {
+                printf("%s", "File not found.");
+                break;
             }
 
         }
@@ -728,6 +731,6 @@ void printGameState() {
         // Next Line
         printf("\n", "");
     }
-    printf("\n%s\n", "INPUT:");
+    printf("\n%s", "INPUT >");
 
 };
