@@ -1,5 +1,3 @@
 Bacon is good
-
 HELLOWORLD
-
 Leverpostejslagkage

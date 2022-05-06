@@ -354,27 +354,35 @@ void printHorList(struct Card *pCard, int rowNumber) {
         // If the correct card
         if (curRow == rowNumber)
         {
-            // Print the card
-            if (pCard->value < 10) {
-                printf(" %d", pCard->value);
-            } else {
-                switch (pCard->value) {
-                    case 10:
-                        printf(" %c", 'T');
-                        break;
-                    case 11:
-                        printf(" %c", 'J');
-                        break;
-                    case 12:
-                        printf(" %c", 'Q');
-                        break;
-                    case 13:
-                        printf(" %c", 'K');
-                        break;
+            // If the card is shown
+            if (pCard->shown == 0) {
+                // Print the card
+                if (pCard->value < 10) {
+                    printf(" %d", pCard->value);
+                } else {
+                    switch (pCard->value) {
+                        case 10:
+                            printf(" %c", 'T');
+                            break;
+                        case 11:
+                            printf(" %c", 'J');
+                            break;
+                        case 12:
+                            printf(" %c", 'Q');
+                            break;
+                        case 13:
+                            printf(" %c", 'K');
+                            break;
+                    }
                 }
+                printf("%c\t", pCard->suit);
+                cardPrinted = 1;
+            } else
+            {
+                // Print Blank square
+                printf(" []\t", "");
+                cardPrinted = 1;
             }
-            printf("%c\t", pCard->suit);
-            cardPrinted = 1;
         }
         curRow++;
         pCard = pCard->prev;
@@ -552,9 +560,47 @@ void doCommand (char firstChar, char secChar) {
             card_old = columnArray[i];
             for (int j = 0; j < cardsInColumn; ++j) {
                 card_new = deck[cards_placed];
+                card_new->shown = 0;
                 card_new->next = card_old; // Link first node with'
                 card_new->prev = NULL; // Link first node with'
                 card_old->prev = card_new; // Link first node with'
+
+                // Determine which cards will be shown
+                switch(cardsInColumn){
+
+                    case 6:
+                        if (j < 1){
+                            card_new->shown = 1;
+                        }
+                        break;
+                    case 7:
+                        if (j < 2){
+                            card_new->shown = 1;
+                        }
+                        break;
+                    case 8:
+                        if (j < 3){
+                            card_new->shown = 1;
+                        }
+                        break;
+                    case 9:
+                        if (j < 4){
+                            card_new->shown = 1;
+                        }
+                        break;
+                    case 10:
+                        if (j < 5){
+                            card_new->shown = 1;
+                        }
+                        break;
+                    case 11:
+                        if (j < 6){
+                            card_new->shown = 1;
+                        }
+                        break;
+                }
+
+                // Next Card
                 card_old = card_new;
                 cards_placed++;
             }
@@ -590,7 +636,7 @@ void doCommand (char firstChar, char secChar) {
     char readFile[150];
     if ('L' == firstChar && 'D' == secChar) {
         printf("%s", fileName);
-        fp = fopen("text.txt", "r");
+        fp = fopen(fileName, "r");
 
         while(!feof(fp)) {
             fgets(readFile, 150, fp);
