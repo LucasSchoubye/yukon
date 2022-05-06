@@ -351,6 +351,12 @@ void printHorList(struct Card *pCard, int rowNumber) {
     int cardPrinted = 0;
     while (pCard != NULL)
     {
+        // Check visibility
+        if (pCard->prev == NULL)
+        {
+            pCard->shown = 0;
+        }
+
         // If the correct card
         if (curRow == rowNumber)
         {
