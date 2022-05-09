@@ -552,6 +552,12 @@ void doCommand(char firstChar, char secChar) {
         printDeck();
     }
 
+    // Show Deck (SI)
+    if ('S' == firstChar && 'W' == secChar) {
+        // Shuffle
+        mixCardsInterleaved(deck);
+    }
+
     // Play (P)
     if ('P' == secChar) {
         // Create 7 columns of cards (set-up game)
