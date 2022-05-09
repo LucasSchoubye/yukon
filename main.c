@@ -725,7 +725,7 @@ void printGameState() {
         // Print Foundations
         if (q > 0 && q < 5) {
             printf("\t %c%d", 'F', q - 1);
-            printAnyCard(foundationArray[q - 1]);
+            printAnyCard(searchLastCard(foundationArray[q - 1]));
         }
 
         // Next Line
