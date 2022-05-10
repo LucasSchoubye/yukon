@@ -136,7 +136,7 @@ int main() {
         while (fileName[i] != NULL) {
             i++;
         }
-        i--;
+
         //printf("%s", "fuck mit net b");
         if (spaceTrue != 1) {
             doCommand(inputLine[inputPointer - 3], inputLine[inputPointer - 2]);
