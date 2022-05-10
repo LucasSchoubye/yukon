@@ -262,43 +262,46 @@ void mixCards(struct Card *deck[]) {
 }
 
 void mixCardsInterleaved(struct Card *deck[]) {
-
+    //initialize decks and rand int
     int topDeck = rand() % (52 + 1 - 0) + 0;
 
     int *shuffle1[topDeck];
     int *shuffle2[52 - topDeck];
 
-    // if topdeck > 52/2
-    // switch shuffle1 og shuffle 2
-
+    //fill shuffle decks
     for (int i = 0; i < topDeck; i++) {
         shuffle1[i] = deck[i];
     }
     for (int i = 0; i < 52 - topDeck; i++) {
         shuffle2[i] = deck[topDeck + i];
     }
-    for (int i = 0; i < topDeck; i++) {
 
+    //shuffle function
+    for (int i = 0; i < topDeck; i++) {
         // Insert the first deck
-        if (shuffle1[i] != NULL) {
-            if (topDeck >= 52 / 2) {
-                deck[i * 2] = shuffle1[i];
-            } else {
-                deck[i * 2 - 1] = shuffle1[i];
-            }
+        if (topDeck >= 52 / 2) {
+            deck[i * 2] = shuffle1[i];
+        } else {
+            deck[i * 2 - 1] = shuffle1[i];
         }
         // Insert the second deck
-        if (shuffle2[i - topDeck] != NULL) {
-            if (topDeck >= 52 / 2) {
-                deck[i * 2 - 1] = shuffle2[i];
-            } else {
-                deck[i * 2] = shuffle2[i];
-            }
+        if (topDeck >= 52 / 2) {
+            deck[i * 2 - 1] = shuffle2[i];
+        } else {
+            deck[i * 2] = shuffle2[i];
         }
     }
-    if (topDeck >= 52) {
-        for (int i = 0; i < 2; ++i) {
-            //too kogt laver færdig i morgen:)
+    //fill rest of shuffle deck in the bottom of deck
+    if (topDeck != 52 / 2) {
+        for (int i = topDeck * 2 + 1; i < 52 - (topDeck * 2); ++i) {
+            int j = topDeck + 1;
+            if (topDeck <= 52 / 2) {
+                deck[i] = shuffle1[j];
+                j++;
+            } else {
+                deck[i] = shuffle2[j];
+                j++;
+            }
         }
     }
 }
@@ -351,17 +354,14 @@ void printAnyCard(struct Card *pCard) {
 void printHorList(struct Card *pCard, int rowNumber) {
     int curRow = 0;
     int cardPrinted = 0;
-    while (pCard != NULL)
-    {
+    while (pCard != NULL) {
         // Check visibility
-        if (pCard->prev == NULL)
-        {
+        if (pCard->prev == NULL) {
             pCard->shown = 0;
         }
 
         // If the correct card
-        if (curRow == rowNumber)
-        {
+        if (curRow == rowNumber) {
             // If the card is shown
             if (pCard->shown == 0) {
                 // Print the card
@@ -385,8 +385,7 @@ void printHorList(struct Card *pCard, int rowNumber) {
                 }
                 printf("%c\t", pCard->suit);
                 cardPrinted = 1;
-            } else
-            {
+            } else {
                 // Print Blank square
                 printf(" []\t", "");
                 cardPrinted = 1;
@@ -552,6 +551,12 @@ void doCommand(char firstChar, char secChar) {
         printDeck();
     }
 
+    // Mix cards (SI)
+    if ('S' == firstChar && 'I' == secChar) {
+        // Shuffle
+        mixCardsInterleaved(deck);
+    }
+
     // Play (P)
     if ('P' == secChar) {
         // Create 7 columns of cards (set-up game)
@@ -565,35 +570,35 @@ void doCommand(char firstChar, char secChar) {
                 card_old->prev = card_new; // Link first node with'
 
                 // Determine which cards will be shown
-                switch(cardsInColumn){
+                switch (cardsInColumn) {
 
                     case 6:
-                        if (j < 1){
+                        if (j < 1) {
                             card_new->shown = 1;
                         }
                         break;
                     case 7:
-                        if (j < 2){
+                        if (j < 2) {
                             card_new->shown = 1;
                         }
                         break;
                     case 8:
-                        if (j < 3){
+                        if (j < 3) {
                             card_new->shown = 1;
                         }
                         break;
                     case 9:
-                        if (j < 4){
+                        if (j < 4) {
                             card_new->shown = 1;
                         }
                         break;
                     case 10:
-                        if (j < 5){
+                        if (j < 5) {
                             card_new->shown = 1;
                         }
                         break;
                     case 11:
-                        if (j < 6){
+                        if (j < 6) {
                             card_new->shown = 1;
                         }
                         break;
@@ -660,26 +665,25 @@ void doCommand(char firstChar, char secChar) {
         // Loop until end of file (last line of file)
         while (!feof(fp)) {
             fgets(readFile, 104, fp);
-            if (readFile[0] != NULL && readFile[1] != NULL)
-            {
+            if (readFile[0] != NULL && readFile[1] != NULL) {
                 // Load deck from file through readFile
                 card_new = (struct Card *) malloc(sizeof(struct Card));
-                    switch (readFile[0]) {
-                        case 'T':
-                            card_new->value = 10;
-                            break;
-                        case 'J':
-                            card_new->value = 11;
-                            break;
-                        case 'Q':
-                            card_new->value = 12;
-                            break;
-                        case 'K':
-                            card_new->value = 13;
-                            break;
-                        default:
-                            card_new->value = readFile[0] - '0'; // assign data in first node
-                    }
+                switch (readFile[0]) {
+                    case 'T':
+                        card_new->value = 10;
+                        break;
+                    case 'J':
+                        card_new->value = 11;
+                        break;
+                    case 'Q':
+                        card_new->value = 12;
+                        break;
+                    case 'K':
+                        card_new->value = 13;
+                        break;
+                    default:
+                        card_new->value = readFile[0] - '0'; // assign data in first node
+                }
                 card_new->suit = readFile[1]; // assign data in first node
                 deck[card_num] = card_new;
                 card_num++;
