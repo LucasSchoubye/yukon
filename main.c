@@ -551,12 +551,6 @@ void doCommand(char firstChar, char secChar) {
         printDeck();
     }
 
-    // Mix cards (SI)
-    if ('S' == firstChar && 'I' == secChar) {
-        // Shuffle
-        mixCardsInterleaved(deck);
-    }
-
     // Play (P)
     if ('P' == secChar) {
         // Create 7 columns of cards (set-up game)
@@ -729,7 +723,7 @@ void printGameState() {
         // Print Foundations
         if (q > 0 && q < 5) {
             printf("\t %c%d", 'F', q - 1);
-            printAnyCard(foundationArray[q - 1]);
+            printAnyCard(searchLastCard(foundationArray[q - 1]));
         }
 
         // Next Line
