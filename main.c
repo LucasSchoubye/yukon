@@ -209,37 +209,38 @@ void mixCardsInterleaved(struct Card *deck[]) {
     //initialize decks and rand int
     int topDeck = rand() % (52 + 1 - 0) + 0;
 
-    int *shuffle1[topDeck];
-    int *shuffle2[52 - topDeck];
+    int* shuffle1 [topDeck];
+    int* shuffle2 [52-topDeck];
 
     //fill shuffle decks
     for (int i = 0; i < topDeck; i++) {
         shuffle1[i] = deck[i];
     }
-    for (int i = 0; i < 52 - topDeck; i++) {
+    for (int i = 0; i < 52-topDeck; i++) {
         shuffle2[i] = deck[topDeck + i];
     }
 
     //shuffle function
     for (int i = 0; i < topDeck; i++) {
+
         // Insert the first deck
-        if (topDeck >= 52 / 2) {
-            deck[i * 2] = shuffle1[i];
+        if (topDeck >= 52/2) {
+            deck[i*2] = shuffle1[i];
         } else {
-            deck[i * 2 - 1] = shuffle1[i];
+            deck[i*2-1] = shuffle1[i];
         }
         // Insert the second deck
-        if (topDeck >= 52 / 2) {
-            deck[i * 2 - 1] = shuffle2[i];
+        if (topDeck >= 52/2) {
+            deck[i*2-1] = shuffle2[i];
         } else {
-            deck[i * 2] = shuffle2[i];
+            deck[i*2] = shuffle2[i];
         }
     }
     //fill rest of shuffle deck in the bottom of deck
-    if (topDeck != 52 / 2) {
-        for (int i = topDeck * 2 + 1; i < 52 - (topDeck * 2); ++i) {
-            int j = topDeck + 1;
-            if (topDeck <= 52 / 2) {
+    if (topDeck != 52/2) {
+        int j = topDeck + 1;
+        for (int i = topDeck*2+1; i < 52-(topDeck*2); ++i) {
+            if (topDeck < 52/2) {
                 deck[i] = shuffle1[j];
                 j++;
             } else {
@@ -460,6 +461,11 @@ void doCommand(char firstChar, char secChar) {
     if ('S' == firstChar && 'W' == secChar) {
         // Shuffle
         printDeck();
+    }
+
+    if ('S' == firstChar && 'I' == secChar) {
+        // Shuffle
+        mixCardsInterleaved(deck);
     }
 
     // Play (P)
