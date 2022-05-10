@@ -26,7 +26,6 @@ struct Card *column_test = NULL;
 int card_num = 0;
 int cards_placed = 0;
 int cardsInColumn = 1;
-int scanLoopIndex = 0;
 int gameStarted = 0;
 char fileName[255];
 struct Card *deck[52];
@@ -34,29 +33,16 @@ struct Card *card_new = NULL;
 struct Card *card_old = NULL;
 
 // Methods
-void printPrevList(struct Card *pCard);
-
 void printGameState();
-
 const char *checkFileInput(char *inputLine, int inputPointer);
-
 void printAnyCard(struct Card *pCard);
-
 void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, char toChar, char toNumber);
-
 struct Card *searchSpecificCard(struct Card *n, char cardSuit, char cardValue);
-
 struct Card *searchLastCard(struct Card *n);//, char cardSuit, char cardValue);
-void mixCards();
-
 void doCommand(char firstChar, char secChar);
-
 int hasWon();
-
 FILE *fopen(const char *filename, const char *mode);
-
 int fscanf(FILE *stream, const char *format, ...);
-
 int fputs(const char *str, FILE *stream);
 
 // Play the game
@@ -118,48 +104,6 @@ int main() {
     for (int i = 0; i < 1000; ++i) {
         //mixCards(deck);
     }
-
-    /*
-    // Create 7 columns of cards (set-up game)
-    for (int i = 0; i < 7; ++i)
-    {
-        card_old = columnArray[i];
-        for (int j = 0; j < cardsInColumn; ++j)
-        {
-            card_new = deck[cards_placed];
-            card_new->next = card_old; // Link first node with'
-            card_new->prev = NULL; // Link first node with'
-            card_old->prev = card_new; // Link first node with'
-            card_old = card_new;
-            cards_placed++;
-        }
-        // Print Column
-        printPrevList(columnArray[i]);
-        printf("%c\n", "");
-        // How big is the next column
-        switch(cards_placed)
-        {
-            case 1:
-                cardsInColumn = 6;
-                break;
-            case 7:
-                cardsInColumn = 7;
-                break;
-            case 14:
-                cardsInColumn = 8;
-                break;
-            case 22:
-                cardsInColumn = 9;
-                break;
-            case 31:
-                cardsInColumn = 10;
-                break;
-            case 41:
-                cardsInColumn = 11;
-                break;
-        }
-    }
-     */
 
     // Play the game
     printf("%s\n", "WELCOME TO YUKON: PRESS 'P' TO START");
@@ -306,30 +250,6 @@ void mixCardsInterleaved(struct Card *deck[]) {
     }
 }
 
-void printPrevList(struct Card *pCard) {
-    while (pCard != NULL) {
-        if (pCard->value < 10) { printf(" %d", pCard->value); }
-        else {
-            switch (pCard->value) {
-                case 10:
-                    printf(" %c", 'T');
-                    break;
-                case 11:
-                    printf(" %c", 'J');
-                    break;
-                case 12:
-                    printf(" %c", 'Q');
-                    break;
-                case 13:
-                    printf(" %c", 'K');
-                    break;
-            }
-        }
-        printf("%c", pCard->suit);
-        pCard = pCard->prev;
-    }
-}
-
 void printAnyCard(struct Card *pCard) {
     if (pCard->value < 10) { printf(" %d", pCard->value); }
     else {
@@ -453,14 +373,6 @@ void gameCommand(char fromChar, char fromNumber, char cardValue, char cardSuit, 
     }
 }
 
-void printList(struct Card *n) {
-    while (n != NULL) {
-        printf(" %d ", n->value);
-        printf("(%c)", n->suit);
-        n = n->next;
-    }
-}
-
 void printDeck() {
     // Print Deck
     for (int i = 0; i < 52; ++i) {
@@ -534,7 +446,6 @@ void doCommand(char firstChar, char secChar) {
         // Quit
         printf("%s", "QUITTING GAME");
         exit(0);
-        scanLoopIndex = 10;
     }
 
     // Shuffle Randomly (SR)
@@ -625,7 +536,6 @@ void doCommand(char firstChar, char secChar) {
                     break;
             }
         }
-        scanLoopIndex = 10;
         gameStarted = 1;
     }
 
